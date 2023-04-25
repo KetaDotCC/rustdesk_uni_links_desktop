@@ -10,6 +10,7 @@ public class UniLinksDesktopPlugin: NSObject, FlutterPlugin, FlutterStreamHandle
     
     private var _eventSink: FlutterEventSink?;
     private var _initialUrl: String?
+    private static var _inited: Bool = false;
     
     public static var instance: UniLinksDesktopPlugin {
         get {
@@ -19,7 +20,10 @@ public class UniLinksDesktopPlugin: NSObject, FlutterPlugin, FlutterStreamHandle
     
     override init(){
         super.init();
-        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(handleURLEvent(_:with:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+        if (!UniLinksDesktopPlugin._inited) {
+            NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(handleURLEvent(_:with:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+            UniLinksDesktopPlugin._inited = true;
+        }
     }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
